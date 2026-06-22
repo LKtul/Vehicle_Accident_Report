@@ -319,11 +319,7 @@
   <!-- Header -->
   <div class="hdr">
     <!-- Logo placeholder — swap src for the real HG logo path on SharePoint -->
-    <svg width="120" height="46" viewBox="0 0 120 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="120" height="46" rx="3" fill="#00567D"/>
-      <text x="10" y="30" font-family="Oswald,sans-serif" font-weight="700" font-size="22" fill="#fff" letter-spacing="1">HOLMES</text>
-      <text x="10" y="42" font-family="Oswald,sans-serif" font-weight="400" font-size="10" fill="#E96C2F" letter-spacing="3">GEOSPATIAL</text>
-    </svg>
+    <img src="https://github.com/LKtul/Vehicle_Accident_Report/blob/main/Holmes%20Geospatial%20Logo__Email.png?raw=true" alt="Holmes Geospatial" style="height:46px;width:auto;">
     <div class="titlewrap">
       <h1>Accident / Incident Report</h1>
       <div class="sub">Holmes Geospatial, PA &nbsp;·&nbsp; Submit within 24 hours</div>
@@ -559,7 +555,7 @@
 const POWER_AUTOMATE_URL = "https://prod-XX.westus.logic.azure.com/workflows/YOUR_FLOW_ID_HERE/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=YOUR_SIG_HERE";
 
 // ── Field lists for save/load ───────────────────────────────────────
-var TEXT_IDS = ['driverName','phone','employeeEmail','dlNumber','vehicleId','vehicleMake',
+var TEXT_IDS = ['driverName','phone','employeeId','employeeEmail','dlNumber','vehicleId','vehicleMake',
   'licensePlate','mileage','accidentDate','accidentTime','location','description',
   'weatherOther','roadOther',
   'otherDriverName','otherDriverPhone','otherInsurance','otherVehicle','otherPlate',
@@ -651,7 +647,7 @@ function collect() {
   var d = {_form:'HG_AccidentReport', _version:1};
   TEXT_IDS.forEach(function(id){
     var el = document.getElementById(id);
-    d[id] = el ? el.value : '';
+    d[id] = el ? el.value.trim() : '';
   });
   RADIO_GROUPS.forEach(function(g){
     var c = document.querySelector('input[name="'+g+'"]:checked');
@@ -776,41 +772,51 @@ document.getElementById('accidentForm').addEventListener('submit', function(e){
 
   var d = collect();
 
-  var body = [
-    'driverName: '        + d.driverName,
-    'phone: '             + d.phone,
-    'department: '        + d.employeeId,
-    'employeeEmail: '     + d.employeeEmail,
-    'dlNumber: '          + d.dlNumber,
-    'vehicleId: '         + d.vehicleId,
-    'vehicleMake: '       + d.vehicleMake,
-    'licensePlate: '      + d.licensePlate,
-    'mileage: '           + d.mileage,
-    'accidentDate: '      + d.accidentDate,
-    'accidentTime: '      + d.accidentTime,
-    'location: '          + d.location,
-    'weather: '           + d.weather,
-    'road: '              + d.road,
-    'traffic: '           + d.traffic,
-    'description: '       + d.description,
-    'otherDriverName: '   + d.otherDriverName,
-    'otherDriverPhone: '  + d.otherDriverPhone,
-    'otherInsurance: '    + d.otherInsurance,
-    'otherVehicle: '      + d.otherVehicle,
-    'otherPlate: '        + d.otherPlate,
-    'passengers: '        + d.passengers,
-    'injuries: '          + d.injuries,
-    'injuryDescription: ' + d.injuryDescription,
-    'lawEnforcement: '    + d.lawEnforcement,
-    'lawAgency: '         + d.lawAgency,
-    'reportNumber: '      + d.reportNumber,
-    'witnesses: '         + d.witnesses,
-    'signatureDate: '     + d.signatureDate,
-    'reviewedBy: '        + d.reviewedBy,
-    'reviewDate: '        + d.reviewDate,
-    'supSignDate: '       + d.supSignDate,
-    'reviewNotes: '       + d.reviewNotes
-  ].join('\n');
+  // Only include fields that have a value
+  var fields = [
+    ['driverName',       'driverName',        d.driverName],
+    ['phone',            'phone',             d.phone],
+    ['department',       'department',        d.employeeId],
+    ['employeeEmail',    'employeeEmail',     d.employeeEmail],
+    ['dlNumber',         'dlNumber',          d.dlNumber],
+    ['vehicleId',        'vehicleId',         d.vehicleId],
+    ['vehicleMake',      'vehicleMake',       d.vehicleMake],
+    ['licensePlate',     'licensePlate',      d.licensePlate],
+    ['mileage',          'mileage',           d.mileage],
+    ['accidentDate',     'accidentDate',      d.accidentDate],
+    ['accidentTime',     'accidentTime',      d.accidentTime],
+    ['location',         'location',          d.location],
+    ['weather',          'weather',           d.weather],
+    ['road',             'road',              d.road],
+    ['traffic',          'traffic',           d.traffic],
+    ['description',      'description',       d.description],
+    ['otherDriverName',  'otherDriverName',   d.otherDriverName],
+    ['otherDriverPhone', 'otherDriverPhone',  d.otherDriverPhone],
+    ['otherInsurance',   'otherInsurance',    d.otherInsurance],
+    ['otherVehicle',     'otherVehicle',      d.otherVehicle],
+    ['otherPlate',       'otherPlate',        d.otherPlate],
+    ['passengers',       'passengers',        d.passengers],
+    ['injuries',         'injuries',          d.injuries],
+    ['injuryDescription','injuryDescription', d.injuryDescription],
+    ['lawEnforcement',   'lawEnforcement',    d.lawEnforcement],
+    ['lawAgency',        'lawAgency',         d.lawAgency],
+    ['reportNumber',     'reportNumber',      d.reportNumber],
+    ['witnesses',        'witnesses',         d.witnesses],
+    ['signatureDate',    'signatureDate',     d.signatureDate],
+    ['reviewedBy',       'reviewedBy',        d.reviewedBy],
+    ['reviewDate',       'reviewDate',        d.reviewDate],
+    ['supSignDate',      'supSignDate',       d.supSignDate],
+    ['reviewNotes',      'reviewNotes',       d.reviewNotes]
+  ];
+
+  // Always include required fields even if blank (Power Automate needs the label present)
+  var required_keys = ['driverName','phone','department','employeeEmail','accidentDate','accidentTime','location','description'];
+
+  var bodyLines = fields
+    .filter(function(f){ return f[2] || required_keys.indexOf(f[1]) !== -1; })
+    .map(function(f){ return f[0] + ': ' + (f[2] || ''); });
+
+  var body = bodyLines.join('\n');
 
   var subject = encodeURIComponent('New Incident Report Submitted — ' + d.driverName);
   var bodyEncoded = encodeURIComponent(body);
