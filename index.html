@@ -816,11 +816,10 @@ document.getElementById('accidentForm').addEventListener('submit', function(e){
     .filter(function(f){ return f[2] || required_keys.indexOf(f[1]) !== -1; })
     .map(function(f){ return f[0] + ': ' + (f[2] || ''); });
 
-  var body = bodyLines.join('\n');
+  var body = bodyLines.join('%0D%0A');
 
   var subject = encodeURIComponent('New Incident Report Submitted — ' + d.driverName);
-  var bodyEncoded = encodeURIComponent(body);
-  var mailto = 'mailto:lktul@holmesgeo.com?subject=' + subject + '&body=' + bodyEncoded;
+  var mailto = 'mailto:lktul@holmesgeo.com?subject=' + subject + '&body=' + body;
 
   window.location.href = mailto;
   showToast('✅ Outlook is opening to send your report. Please click Send.');
