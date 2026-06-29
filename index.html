@@ -292,10 +292,54 @@
 
   /* ---------- Print ---------- */
   @media print{
+    @page{ size: letter; margin: 0.35in; }
     .toolbar{display:none;}
-    .page{margin:0;box-shadow:none;width:100%;}
+    .page{
+      margin:0;box-shadow:none;width:100%;
+      padding:0.15in 0.2in 0.1in;
+      min-height:unset;
+    }
     .btn-submit{display:none;}
     .canvas-clear{display:none;}
+    .submit-wrap{display:none;}
+    .add-witness{display:none;}
+    /* Tighten up section spacing */
+    .section{margin-top:5px;}
+    .section h2{padding:3px 8px;font-size:10px;margin-bottom:5px;}
+    .section-body,.grid{gap:5px 14px;}
+    .grid.two{grid-template-columns:1fr 1fr;}
+    .grid.three{grid-template-columns:1fr 1fr 1fr;}
+    /* Smaller inputs */
+    .field label{font-size:9px;margin-bottom:1px;}
+    .field input[type=text],
+    .field input[type=tel],
+    .field input[type=date],
+    .field input[type=time],
+    .field select{font-size:11px;padding:3px 5px;}
+    .field textarea{font-size:11px;min-height:40px;padding:3px 5px;}
+    /* Chips */
+    .opt label{font-size:10px;padding:3px 7px;}
+    .types{gap:4px 6px;}
+    /* Photo upload — show count only */
+    .photo-drop{padding:6px;font-size:10px;}
+    .photo-drop .drop-icon{display:none;}
+    .photo-grid{grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:4px;}
+    /* Header */
+    .hdr{padding-bottom:5px;margin-bottom:2px;}
+    .hdr img{height:32px;}
+    .hdr h1{font-size:16px;}
+    .hdr .sub{font-size:9px;}
+    /* Banner */
+    .banner{padding:5px 8px;font-size:10px;margin-bottom:2px;}
+    /* Ack */
+    .ack{padding:6px 8px;font-size:10px;}
+    /* Sig */
+    .sigline .line{height:20px;}
+    .canvas-wrap canvas{height:50px !important;}
+    /* Footnote */
+    .footnote{margin-top:8px;font-size:8px;}
+    /* Witness */
+    .witness-block{margin-bottom:5px;}
   }
 </style>
 </head>
